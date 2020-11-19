@@ -46,6 +46,6 @@ codecs.available = list.map(entry => entry.name).sort()
 list.forEach(entry => { codecs[entry.name] = entry })
 codecs.has = codec => codecs.available.includes(codec)
 codecs[Symbol.iterator] = () => list[Symbol.iterator]()
-codecs[inspect] = (_, { stylize}) => `function ${stylize('codecs', 'module')} (${codecs.available.map(name => stylize(name, 'special')).join('|')}): { name, encode, decode }`
+codecs[inspect] = (_, { stylize }) => `function ${stylize('@consento/codecs', 'module')} (${codecs.available.map(name => stylize(name, 'special')).join('|')}): { name, encode, decode }`
 
 module.exports = Object.seal(codecs)
