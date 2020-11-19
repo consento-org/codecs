@@ -1,0 +1,27 @@
+{
+  "name": "@consento/codecs",
+  "version": "1.0.0",
+  "description": "Serializable (named) codecs, including msgpack",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard",
+    "unit": "ts-node ./test.ts",
+    "test": "npm run lint && npm run unit"
+  },
+  "keywords": [
+    "codecs"
+  ],
+  "author": "Martin Heidegger <martin.heidegger@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@msgpack/msgpack": "^2.3.0",
+    "codecs": "^2.1.0",
+    "inspect-custom-symbol": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/tape": "^4.13.0",
+    "tape": "^5.0.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  }
+}
