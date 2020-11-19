@@ -1,7 +1,7 @@
 {
   "name": "@consento/codecs",
   "version": "1.0.0",
-  "description": "Serializable (named) codecs, including msgpack",
+  "description": "Serializable (named) codecs, including msgpack that work with typescript",
   "main": "index.js",
   "scripts": {
     "lint": "standard",
@@ -23,5 +23,13 @@
     "tape": "^5.0.1",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/consento-org/codecs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/consento-org/codecs/issues"
+  },
+  "homepage": "https://github.com/consento-org/codecs#readme"
 }
