@@ -1,6 +1,6 @@
 {
   "name": "@consento/codecs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Serializable (named) codecs, including msgpack that work with typescript",
   "main": "index.js",
   "scripts": {
