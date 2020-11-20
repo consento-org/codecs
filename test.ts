@@ -1,6 +1,7 @@
 #!/usr/bin/env npx ts-node
 import tape from 'tape'
-import codecs, { Codec, CodecOption, INamedCodec, CodecType, CodecName } from '.'
+import codecs, { Codec, CodecOption, INamedCodec, InType, OutType, CodecName } from '.'
+import { Buffer } from 'buffer'
 
 tape('available list', async t => {
   t.equals(new Set(codecs.available).size, codecs.available.length, 'no duplicates in list')
@@ -27,14 +28,24 @@ tape('typescript codec argument', async t => {
 })
 
 tape('typescript message types', async t => {
-  const x: CodecType<'msgpack'> = 'hello'
+  const x: InType<'msgpack'> = 'hello'
   // @ts-expect-error
-  const y: CodecType<'utf8'> = {}
+  const y: InType<'utf8'> = {}
   type custom = INamedCodec<'hello', number>
   // @ts-expect-error
-  const z: CodecType<custom> = 'hello'
+  const z: InType<custom> = 'hello'
   // @ts-expect-error
-  const d: CodecType<null, 'utf8'> = {}
+  const d: InType<null, 'utf8'> = {}
+  const a: InType<'binary'> = Buffer.from('hello')
+})
+
+tape('typescript message types', async t => {
+  const x: OutType<'msgpack'> = new Uint8Array(0)
+  const y: OutType<'utf8'> = 'hi'
+  type custom = INamedCodec<'hello', number>
+  const z: OutType<custom> = 1
+  const d: OutType<null, 'utf8'> = 'string'
+  const a: OutType<'binary'> = Buffer.from('hello')
 })
 
 tape('typescript names', async t => {

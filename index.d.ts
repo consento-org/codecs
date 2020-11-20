@@ -1,18 +1,22 @@
-export interface ICodec <TType> {
-  encode (input: TType): Uint8Array
-  decode (input: Uint8Array): TType
+export interface ICodec <TIn, TOut = TIn> {
+  encode (input: TIn): Buffer
+  decode (input: Uint8Array): TOut
 }
-export interface INamedCodec <TName extends string = string, TType = any> extends ICodec<TType> {
+export interface INamedCodec <TName extends string = string, TIn = any, TOut = TIn> extends ICodec<TIn, TOut> {
   name: TName
 }
 export type StringCodec = 'ascii' | 'utf-8' | 'utf8' | 'hex' | 'base64' | 'ucs-2' | 'ucs2' | 'utf16-le' | 'utf16le'
 export type ObjectCodec = 'ndjson' | 'json' | 'msgpack'
 export type SupportedCodec = StringCodec | ObjectCodec | 'binary'
-export type BinaryCodec = INamedCodec<'binary', string | DataView>
+export type BinaryCodec = INamedCodec<'binary', string | ArrayBufferView, Buffer>
 export type CodecOption = SupportedCodec | INamedCodec | null | undefined
 type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
-export type CodecType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
+type ArgsType<T> = T extends (...args: infer U) => any ? U : never
+
+export type OutType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
   ReturnType<PropType<Codec<TCodec, TDefault>, 'decode'>>
+export type InType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
+  ArgsType<PropType<Codec<TCodec, TDefault>, 'encode'>>[0]
 export type CodecName <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
   PropType<Codec<TCodec, TDefault>, 'name'>
 
@@ -27,10 +31,13 @@ export type Codec <TCodec extends CodecOption, TDefault extends CodecOption = Bi
       )
     : TCodec extends SupportedCodec
       ? typeof codecs[TCodec]
-      : TCodec
+      : TCodec extends INamedCodec
+        ? TCodec
+        : BinaryCodec
 
 interface ICodecs {
-  <TCodec extends CodecOption, TDefault extends CodecOption>(codec?: TCodec, fallback?: TDefault): Codec<TCodec, TDefault>
+
+  <TCodec extends CodecOption = undefined, TDefault extends CodecOption = 'binary'>(codec?: TCodec, fallback?: TDefault): Codec<TCodec, TDefault>
 
   [Symbol.iterator] (): Iterator<INamedCodec<SupportedCodec, any>>
 
