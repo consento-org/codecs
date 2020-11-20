@@ -1,6 +1,6 @@
 #!/usr/bin/env npx ts-node
 import tape from 'tape'
-import codecs, { Codec, CodecOption, INamedCodec } from '.'
+import codecs, { Codec, CodecOption, INamedCodec, CodecType, CodecName } from '.'
 
 tape('available list', async t => {
   t.equals(new Set(codecs.available).size, codecs.available.length, 'no duplicates in list')
@@ -20,10 +20,33 @@ tape('typescript codec argument', async t => {
     return codecs(codec, 'msgpack')
   }
   const binary = fn()
+
   t.equals(binary.name, 'msgpack')
   const json = fn({ codec: 'json' })
   t.equals(json.name, 'json')
 })
+
+tape('typescript message types', async t => {
+  const x: CodecType<'msgpack'> = 'hello'
+  // @ts-expect-error
+  const y: CodecType<'utf8'> = {}
+  type custom = INamedCodec<'hello', number>
+  // @ts-expect-error
+  const z: CodecType<custom> = 'hello'
+  // @ts-expect-error
+  const d: CodecType<null, 'utf8'> = {}
+})
+
+tape('typescript names', async t => {
+  const x: CodecName<'msgpack'> = 'msgpack'
+  // @ts-expect-error
+  const y: CodecName<'msgpack'> = 'hello'
+  const z: CodecName<undefined> = 'binary'
+  const a: CodecName<undefined, 'msgpack'> = 'msgpack'
+  type custom = INamedCodec<'hello', number>
+  const b: CodecName<custom> = 'hello'
+})
+
 tape('bring-your-own codec', async t => {
   const ownCodec: INamedCodec<'fancy', string> = {
     name: 'fancy',
@@ -33,6 +56,7 @@ tape('bring-your-own codec', async t => {
   const codec = codecs(ownCodec)
   t.equals(codec.name, 'fancy')
 })
+
 tape('bring-your-own fallback', async t => {
   const ownCodec: INamedCodec<'fancy', string> = {
     name: 'fancy',

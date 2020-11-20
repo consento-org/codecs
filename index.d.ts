@@ -10,6 +10,12 @@ export type ObjectCodec = 'ndjson' | 'json' | 'msgpack'
 export type SupportedCodec = StringCodec | ObjectCodec | 'binary'
 export type BinaryCodec = INamedCodec<'binary', string | DataView>
 export type CodecOption = SupportedCodec | INamedCodec | null | undefined
+type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
+export type CodecType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
+  ReturnType<PropType<Codec<TCodec, TDefault>, 'decode'>>
+export type CodecName <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
+  PropType<Codec<TCodec, TDefault>, 'name'>
+
 export type Codec <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
   TCodec extends null | undefined
     ? (
