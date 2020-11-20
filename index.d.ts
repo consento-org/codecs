@@ -1,4 +1,4 @@
-/// <reference types="node" />
+import { Buffer } from 'buffer'
 export interface ICodec <TIn, TOut = TIn> {
   encode (input: TIn): Buffer
   decode (input: Uint8Array): TOut
