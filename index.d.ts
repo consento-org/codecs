@@ -1,3 +1,4 @@
+/// <reference types="node" />
 export interface ICodec <TIn, TOut = TIn> {
   encode (input: TIn): Buffer
   decode (input: Uint8Array): TOut
@@ -10,6 +11,7 @@ export type ObjectCodec = 'ndjson' | 'json' | 'msgpack'
 export type SupportedCodec = StringCodec | ObjectCodec | 'binary'
 export type BinaryCodec = INamedCodec<'binary', string | ArrayBufferView, Buffer>
 export type CodecOption = SupportedCodec | INamedCodec | null | undefined
+
 type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
 type ArgsType<T> = T extends (...args: infer U) => any ? U : never
 
@@ -57,6 +59,7 @@ interface ICodecs {
   ndjson: INamedCodec<'ndjson', any>
   msgpack: INamedCodec<'msgpack', any>
   json: INamedCodec<'json', any>
+  inspect (type: string, name: string): () => string
 }
 
 declare const codecs: ICodecs

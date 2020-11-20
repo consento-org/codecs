@@ -15,7 +15,6 @@
   "license": "MIT",
   "dependencies": {
     "@msgpack/msgpack": "^2.3.0",
-    "codecs": "^2.1.0",
     "buffer": "^6.0.2",
     "inspect-custom-symbol": "^1.1.1"
   },
