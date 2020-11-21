@@ -1,9 +1,15 @@
 const Buffer = require('buffer').Buffer
 const inspect = require('inspect-custom-symbol')
 const msgpack = require('@msgpack/msgpack')
+const base32Decode = require('base32-decode')
+const base32Encode = require('base32-encode')
 
 const list = [
   createString('ascii'),
+  createBase32('base32', 'RFC4648', { padding: false }),
+  createBase32('base32-c', 'Crockford'),
+  createBase32('base32-h', 'RFC4648-HEX'),
+  createBase32('base32-p', 'RFC4648', { padding: true }),
   createString('base64'),
   Object.seal({
     name: 'binary',
@@ -96,6 +102,20 @@ function createString (type) {
     },
     decode: function decodeString (buf) {
       return buf.toString(type)
+    }
+  })
+}
+
+function createBase32 (name, variant, options) {
+  return Object.seal({
+    name: name,
+    [inspect]: createInspect('string', name),
+    encode: function encodeBase32 (val) {
+      if (typeof val !== 'string') val = val.toString()
+      return Buffer.from(base32Decode(val, variant))
+    },
+    decode: function decodeBase32 (val) {
+      return base32Encode(val, variant, options)
     }
   })
 }

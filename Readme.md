@@ -1,7 +1,10 @@
 # `@consento/codecs`
 
 Extended version of [`codecs`](https://github.com/mafintosh/codecs) that is suited for serialization, supports typescript
-and supports [`msgpack`](https://github.com/msgpack/msgpack-javascript).
+and supports [`msgpack`](https://github.com/msgpack/msgpack-javascript) and `base32` [encoding][b32enc] and [decoding][b32dec].
+
+[b32enc]: https://github.com/LinusU/base32-encode
+[b32dec]: https://github.com/LinusU/base32-decode
 
 ```js
 const codecs = require('@consento/codecs')

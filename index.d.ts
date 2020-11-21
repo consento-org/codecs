@@ -6,7 +6,7 @@ export interface ICodec <TIn, TOut = TIn> {
 export interface INamedCodec <TName extends string = string, TIn = any, TOut = TIn> extends ICodec<TIn, TOut> {
   name: TName
 }
-export type StringCodec = 'ascii' | 'utf-8' | 'utf8' | 'hex' | 'base64' | 'ucs-2' | 'ucs2' | 'utf16-le' | 'utf16le'
+export type StringCodec = 'ascii' | 'utf-8' | 'utf8' | 'hex' | 'base64' | 'ucs-2' | 'ucs2' | 'utf16-le' | 'utf16le' | 'base32' | 'base32-p' | 'base32-c' | 'base32-h'
 export type ObjectCodec = 'ndjson' | 'json' | 'msgpack'
 export type SupportedCodec = StringCodec | ObjectCodec | 'binary'
 export type BinaryCodec = INamedCodec<'binary', string | ArrayBufferView, Buffer>
@@ -51,6 +51,10 @@ interface ICodecs {
   'utf-8': INamedCodec<'utf-8', string>
   utf8: INamedCodec<'utf8', string>
   hex: INamedCodec<'hex', string>
+  base32: INamedCodec<'RFC4648', string>
+  'base32-p': INamedCodec<'base32-p', string>
+  'base32-c': INamedCodec<'base32-c', string>
+  'base32-h': INamedCodec<'base32-h', string>
   base64: INamedCodec<'base64', string>
   'ucs-2': INamedCodec<'ucs-2', string>
   ucs2: INamedCodec<'ucs2', string>

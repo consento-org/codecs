@@ -135,3 +135,43 @@ tape('uint8arrays in binary', function (t) {
   t.same(buf, Buffer.from([1, 2, 3]))
   t.end()
 })
+
+tape('base32', function (t) {
+  var enc = codecs('base32')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var str = enc.decode(buf)
+  t.same(str, 'AEBAG')
+  t.same(Buffer.compare(buf, enc.encode(str)), 0)
+  t.end()
+})
+
+tape('base32-c', function (t) {
+  var enc = codecs('base32-c')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var str = enc.decode(buf)
+  t.same(str, '04106')
+  t.same(Buffer.compare(buf, enc.encode(str)), 0)
+  t.end()
+})
+
+tape('base32-h', function (t) {
+  var enc = codecs('base32-h')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var str = enc.decode(buf)
+  t.same(str, '04106===')
+  t.same(Buffer.compare(buf, enc.encode(str)), 0)
+  t.end()
+})
+
+tape('base32-p', function (t) {
+  var enc = codecs('base32-p')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var str = enc.decode(buf)
+  t.same(str, 'AEBAG===')
+  t.same(Buffer.compare(buf, enc.encode(str)), 0)
+  t.end()
+})
