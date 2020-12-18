@@ -1,33 +1,55 @@
 # `@consento/codecs`
 
-Extended version of [`codecs`](https://github.com/mafintosh/codecs) that is suited for serialization, supports typescript
-and supports [`msgpack`](https://github.com/msgpack/msgpack-javascript) and `base32` [encoding][b32enc] and [decoding][b32dec].
+Extended, sealed version of [codecs][codecs] that supports [msgpack][msgpack] and `base32` [encoding][b32enc] and [decoding][b32dec].
 
+[codecs]: https://github.com/mafintosh/codecs
+[msgpack]: https://github.com/msgpack/msgpack-javascript
 [b32enc]: https://github.com/LinusU/base32-encode
 [b32dec]: https://github.com/LinusU/base32-decode
 
 ```js
 const codecs = require('@consento/codecs')
-const json = codecs('json')
-const buffer = json.encode({ hello: 'world'}) // JSON buffer
+const json = codecs('base32')
+const buffer = json.encode({ hello: 'world' }) // JSON buffer
 json.decode(buffer)
-```
 
-## Fallback support
+codecs.msgpack // You can access the codecs directly
 
-> This is particularly interesting for `TypeScript` as proper type declarations can be tough!
+codecs.available /*
+[
+  'ascii',    'base32',
+  'base32c',  'base32h',
+  'base32hp', 'base32p',
+  'base64',   'binary',
+  'hex',      'json',
+  'msgpack',  'ndjson',
+  'ucs-2',    'ucs2',
+  'utf-8',    'utf16-le',
+  'utf16le',  'utf8'
+]
+*/;
 
-Codecs supports an additional `fallback` property that is used if a given codec is not available.
+codecs.has('hex') // true
 
-```typescript
-import codecs, { Codec, CodecOption } from '@consento/codecs'
-
-const fn = function <TCodec extends CodecOption = undefined> ({ codec }: { codec?: TCodec } = {}): Codec<TCodec, 'msgpack'> {
-  return codecs(codec, 'msgpack') // The default fallback is 'binary', here we change it to 'msgpack'
+for (const codec of codecs) {
+  console.log(codec) /*
+    Codec(string:ascii)
+    Codec(string:base32)
+    Codec(string:base32c)
+    Codec(string:base32h)
+    Codec(string:base32hp)
+    Codec(string:base32p)
+    Codec(string:base64)
+    Codec(Buffer:binary)
+    Codec(string:hex)
+    Codec(any:json)
+    Codec(any:msgpack)
+    Codec(any:ndjson)
+    Codec(string:ucs2)
+    Codec(string:utf-8)
+    Codec(string:utf16le)
+  */
 }
-
-fn().name === 'msgpack'
-fn({ codec: 'json' }).name === 'json'
 ```
 
 ## License

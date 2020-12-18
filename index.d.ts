@@ -1,71 +1,42 @@
-import { Buffer } from 'buffer'
-export interface ICodec <TIn, TOut = TIn> {
-  encode (input: TIn): Buffer
-  decode (input: Uint8Array): TOut
+import { Codecs as BaseCodecs, Codec as BaseCodec, OutType as BaseOutType, InType as BaseInType, CodecName as BaseCodecName, NamedCodec, BinaryCodec, CodecLookup } from 'codecs'
+import { MsgPackCodec } from 'msgpack-codec'
+import { Base32cCodec, Base32Codec, Base32hCodec, Base32hpCodec, Base32pCodec } from 'base32-codecs'
+
+interface KnownCodecs extends CodecLookup {
+  base32: Base32Codec
+  base32c: Base32cCodec
+  base32h: Base32hCodec
+  base32hp: Base32hpCodec
+  base32p: Base32pCodec
+  msgpack: MsgPackCodec
 }
-export interface INamedCodec <TName extends string = string, TIn = any, TOut = TIn> extends ICodec<TIn, TOut> {
-  name: TName
-}
-export type StringCodec = 'ascii' | 'utf-8' | 'utf8' | 'hex' | 'base64' | 'ucs-2' | 'ucs2' | 'utf16-le' | 'utf16le' | 'base32' | 'base32-p' | 'base32-c' | 'base32-h'
-export type ObjectCodec = 'ndjson' | 'json' | 'msgpack'
-export type SupportedCodec = StringCodec | ObjectCodec | 'binary'
-export type BinaryCodec = INamedCodec<'binary', string | ArrayBufferView, Buffer>
-export type CodecOption = SupportedCodec | INamedCodec | null | undefined
 
-type PropType<TObj, TProp extends keyof TObj> = TObj[TProp]
-type ArgsType<T> = T extends (...args: infer U) => any ? U : never
+export type Codec <TCodec, TFallback = BinaryCodec, TCodecs = KnownCodecs> = BaseCodec<TCodec, TFallback, TCodecs>
+export type OutType <TCodec extends MaybeCodecInput, TFallback extends NamedCodec = BinaryCodec, TCodecs = KnownCodecs> = BaseOutType<TCodec, TFallback, TCodecs>
+export type InType <TCodec extends MaybeCodecInput, TFallback extends NamedCodec = BinaryCodec, TCodecs = KnownCodecs> = BaseInType<TCodec, TFallback, TCodecs>
+export type CodecName <TCodec extends MaybeCodecInput, TFallback extends NamedCodec = BinaryCodec, TCodecs = KnownCodecs> = BaseCodecName<TCodec, TFallback, TCodecs>
 
-export type OutType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
-  ReturnType<PropType<Codec<TCodec, TDefault>, 'decode'>>
-export type InType <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
-  ArgsType<PropType<Codec<TCodec, TDefault>, 'encode'>>[0]
-export type CodecName <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
-  PropType<Codec<TCodec, TDefault>, 'name'>
+export { MsgPackCodec } from 'msgpack-codec'
+export { Base32cCodec, Base32Codec, Base32hCodec, Base32hpCodec, Base32pCodec } from 'base32-codecs'
+export { JsonCodec, NDJsonCodec, AsciiCodec, Utf8Codec, HexCodec, Base64Codec, Ucs2Codec, Utf16leCodec, NamedCodec, JsonObject, JsonArray, JsonValue } from 'codecs'
+export type CodecInput = keyof KnownCodecs | NamedCodec
+export type MaybeCodecInput = CodecInput | null | undefined
 
-export type Codec <TCodec extends CodecOption, TDefault extends CodecOption = BinaryCodec> =
-  TCodec extends null | undefined
-    ? (
-      TDefault extends null | undefined
-        ? BinaryCodec
-        : TDefault extends SupportedCodec
-          ? typeof codecs[TDefault]
-          : TDefault
-      )
-    : TCodec extends SupportedCodec
-      ? typeof codecs[TCodec]
-      : TCodec extends INamedCodec
-        ? TCodec
-        : BinaryCodec
+interface Codecs extends BaseCodecs, KnownCodecs {
+  (): BinaryCodec;
+  <TCodec extends MaybeCodecInput, TFallback= BinaryCodec>(
+      codec: TCodec,
+      fallback?: TFallback,
+  ): Codec<TCodec, TFallback>;
 
-interface ICodecs {
+  [Symbol.iterator] (): Iterator<NamedCodec<keyof KnownCodecs>>
 
-  <TCodec extends CodecOption = undefined, TDefault extends CodecOption = 'binary'>(codec?: TCodec, fallback?: TDefault): Codec<TCodec, TDefault>
+  has (codec: string): boolean
 
-  [Symbol.iterator] (): Iterator<INamedCodec<SupportedCodec, any>>
-
-  has (codec: SupportedCodec | INamedCodec): codec is SupportedCodec
-
-  available: Array<SupportedCodec>
-  binary: BinaryCodec
-  ascii: INamedCodec<'ascii', string>
-  'utf-8': INamedCodec<'utf-8', string>
-  utf8: INamedCodec<'utf8', string>
-  hex: INamedCodec<'hex', string>
-  base32: INamedCodec<'RFC4648', string>
-  'base32-p': INamedCodec<'base32-p', string>
-  'base32-c': INamedCodec<'base32-c', string>
-  'base32-h': INamedCodec<'base32-h', string>
-  base64: INamedCodec<'base64', string>
-  'ucs-2': INamedCodec<'ucs-2', string>
-  ucs2: INamedCodec<'ucs2', string>
-  'utf16-le': INamedCodec<'utf16-le', string>
-  utf16le: INamedCodec<'utf16le', string>
-  ndjson: INamedCodec<'ndjson', any>
-  msgpack: INamedCodec<'msgpack', any>
-  json: INamedCodec<'json', any>
+  available: Array<keyof KnownCodecs>
   inspect (type: string, name: string): () => string
 }
 
-declare const codecs: ICodecs
+declare const codecs: Codecs
 
 export default codecs
