@@ -18,12 +18,8 @@
   "author": "Martin Heidegger <martin.heidegger@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@msgpack/msgpack": "^2.3.0",
     "@types/codecs": "^2.2.1",
     "base32-codecs": "^1.0.4",
-    "base32-decode": "^1.0.0",
-    "base32-encode": "^1.1.1",
-    "buffer": "^6.0.3",
     "codecs": "^2.2.0",
     "inspect-custom-symbol": "^1.1.1",
     "msgpack-codec": "^1.0.1"
