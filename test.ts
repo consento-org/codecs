@@ -139,6 +139,50 @@ tape('custom', function (t) {
   t.end()
 })
 
+tape('msgpack extended', function (t) {
+  const custom = codecs.bindMsgpack({})
+  t.equals(custom.name, 'msgpack-ext')
+  t.equals(custom.decode(custom.encode('hello')), 'hello')
+  t.end()
+})
+
+tape('msgpack extended, custom encoding/decoding', function (t) {
+  const extensionCodec = new codecs.msgpack.ExtensionCodec()
+  class Test {
+    value: string
+    constructor (value: string) {
+      this.value = value
+    }
+  }
+  extensionCodec.register({
+    type: 1,
+    encode: (input) => {
+      if (input instanceof Test) {
+        return codecs.msgpack.encode(input.value)
+      }
+      return null
+    },
+    decode: (input: Uint8Array) => {
+      return new Test(codecs.msgpack.decode(Buffer.from(input)) as string)
+    }
+  })
+  const custom = codecs.bindMsgpack({
+    encode: {
+      extensionCodec
+    },
+    decode: {
+      extensionCodec
+    }
+  })
+  const restructed = custom.decode(custom.encode(new Test('hello world')))
+  if (restructed instanceof Test) {
+    t.equals(restructed.value, 'hello world')
+  } else {
+    t.fail('no Test instance')
+  }
+  t.end()
+})
+
 tape('uint8arrays in binary', function (t) {
   var enc = codecs('binary')
 

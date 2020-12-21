@@ -1,5 +1,5 @@
 import { Codecs as BaseCodecs, Codec as BaseCodec, OutType as BaseOutType, InType as BaseInType, CodecName as BaseCodecName, NamedCodec, BinaryCodec, CodecLookup } from 'codecs'
-import { MsgPackCodec } from 'msgpack-codec'
+import { MsgPackCodec, DecodeOptions, EncodeOptions } from 'msgpack-codec'
 import { Base32cCodec, Base32Codec, Base32hCodec, Base32hpCodec, Base32pCodec } from 'base32-codecs'
 
 interface KnownCodecs extends CodecLookup {
@@ -16,7 +16,7 @@ export type OutType <TCodec extends MaybeCodecInput, TFallback extends NamedCode
 export type InType <TCodec extends MaybeCodecInput, TFallback extends NamedCodec = BinaryCodec, TCodecs = KnownCodecs> = BaseInType<TCodec, TFallback, TCodecs>
 export type CodecName <TCodec extends MaybeCodecInput, TFallback extends NamedCodec = BinaryCodec, TCodecs = KnownCodecs> = BaseCodecName<TCodec, TFallback, TCodecs>
 
-export { MsgPackCodec } from 'msgpack-codec'
+export { MsgPackCodec, DecodeOptions, EncodeOptions } from 'msgpack-codec'
 export { Base32cCodec, Base32Codec, Base32hCodec, Base32hpCodec, Base32pCodec } from 'base32-codecs'
 export { JsonCodec, NDJsonCodec, AsciiCodec, Utf8Codec, HexCodec, Base64Codec, Ucs2Codec, Utf16leCodec, NamedCodec, JsonObject, JsonArray, JsonValue } from 'codecs'
 export type CodecInput = keyof KnownCodecs | NamedCodec
@@ -32,6 +32,9 @@ interface Codecs extends BaseCodecs, KnownCodecs {
   [Symbol.iterator] (): Iterator<NamedCodec<keyof KnownCodecs>>
 
   has (codec: string): boolean
+  bindMsgpack <TName extends string | null | undefined = undefined> (options: { encode?: EncodeOptions, decode?: DecodeOptions }, name?: TName): TName extends string
+    ? MsgPackCodec<TName>
+    : MsgPackCodec<'msgpack-ext'>
 
   available: Array<keyof KnownCodecs>
   inspect (type: string, name: string): () => string

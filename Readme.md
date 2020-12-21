@@ -50,6 +50,12 @@ for (const codec of codecs) {
     Codec(string:utf16le)
   */
 }
+
+const extensionCodec = new codecs.msgpack.ExtensionCodec()
+const extMsgpack = codecs.bindMsgPack({
+  encode: { extensionCodec },
+  decode: { extensionCodec }
+})
 ```
 
 ## License

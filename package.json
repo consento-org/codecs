@@ -22,7 +22,7 @@
     "base32-codecs": "^1.0.4",
     "codecs": "^2.2.0",
     "inspect-custom-symbol": "^1.1.1",
-    "msgpack-codec": "^1.0.1"
+    "msgpack-codec": "^1.0.5"
   },
   "devDependencies": {
     "@types/tape": "^4.13.0",

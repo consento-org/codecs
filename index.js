@@ -94,6 +94,25 @@ function codecs (name, fallback) {
 const available = b32Names.concat(baseNames).concat(['msgpack']).sort()
 codecs.available = available
 codecs.has = codec => available.includes(codec)
+codecs.bindMsgpack = (base, name) => {
+  if (msgpack === undefined) {
+    msgpack = prepare(require('msgpack-codec'), 'any')
+  }
+  return prepare({
+    encode (input, options) {
+      if (options) {
+        return msgpack.encode(input, { ...base.encode, ...options })
+      }
+      return msgpack.encode(input, base.encode)
+    },
+    decode (input, options) {
+      if (options) {
+        return msgpack.decode(input, { ...base.decode, ...options })
+      }
+      return msgpack.decode(input, base.decode)
+    }
+  }, 'any', name || 'msgpack-ext')
+}
 codecs[Symbol.iterator] = () => {
   const nextName = available[Symbol.iterator]()
   return {
