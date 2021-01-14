@@ -23,7 +23,11 @@ tape('all list entries exist on object', async t => {
 tape('codecs is iterable', async t => {
   t.deepEqual(
     Array.from(codecs).map(codec => codec.name),
-    ['ascii', 'base32', 'base32c', 'base32h', 'base32hp', 'base32p', 'base64', 'binary', 'hex', 'json', 'msgpack', 'ndjson', 'ucs2', 'utf-8', 'utf16le']
+    [
+      'ascii', 'base32', 'base32c', 'base32h', 'base32hp', 'base32p', 'base64',
+      'bigIntBE', 'bigIntLE', 'bigIntQuick', 'bigUintBE', 'bigUintLE', 'binary',
+      'hex', 'json', 'msgpack', 'ndjson', 'ucs2', 'utf-8', 'utf16le'
+    ]
   )
 })
 
@@ -238,5 +242,55 @@ tape('base32p', function (t) {
   var str = enc.decode(buf)
   t.same(str, 'AEBAG===')
   t.same(Buffer.compare(buf, enc.encode(str)), 0)
+  t.end()
+})
+
+tape('bigIntBE', function (t) {
+  var enc = codecs('bigIntBE')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var num = enc.decode(buf)
+  t.same(num, 66051n)
+  t.same(Buffer.compare(buf, enc.encode(num)), 0)
+  t.end()
+})
+
+tape('bigIntLE', function (t) {
+  var enc = codecs('bigIntLE')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var num = enc.decode(buf)
+  t.same(num, 197121n)
+  t.same(Buffer.compare(buf, enc.encode(num)), 0)
+  t.end()
+})
+
+tape('bigIntQuick', function (t) {
+  var enc = codecs('bigIntQuick')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var num = enc.decode(buf)
+  t.same(num, -98560n)
+  t.same(Buffer.compare(buf, enc.encode(num)), 0)
+  t.end()
+})
+
+tape('bigUintBE', function (t) {
+  var enc = codecs('bigUintBE')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var num = enc.decode(buf)
+  t.same(num, 66051n)
+  t.same(Buffer.compare(buf, enc.encode(num)), 0)
+  t.end()
+})
+
+tape('bigUintLE', function (t) {
+  var enc = codecs('bigUintLE')
+
+  var buf = new Uint8Array([1, 2, 3])
+  var num = enc.decode(buf)
+  t.same(num, 197121n)
+  t.same(Buffer.compare(buf, enc.encode(num)), 0)
   t.end()
 })

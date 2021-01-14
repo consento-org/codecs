@@ -18,6 +18,7 @@
   "author": "Martin Heidegger <martin.heidegger@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@consento/bigint-codec": "^2.0.2",
     "@types/codecs": "^2.2.1",
     "base32-codecs": "^1.0.4",
     "codecs": "^2.2.0",

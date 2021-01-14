@@ -2,6 +2,12 @@ import { Codecs as BaseCodecs, Codec as BaseCodec, OutType as BaseOutType, InTyp
 import { MsgPackCodec, DecodeOptions, EncodeOptions } from 'msgpack-codec'
 import { Base32cCodec, Base32Codec, Base32hCodec, Base32hpCodec, Base32pCodec } from 'base32-codecs'
 
+export type BigIntBECodec = NamedCodec<'bigIntBE', bigint>
+export type BigIntLECodec = NamedCodec<'bigIntLE', bigint>
+export type BigIntQuickCodec = NamedCodec<'bigIntQuick', bigint>
+export type BigUintBECodec = NamedCodec<'bigUintBE', bigint>
+export type BigUintLECodec = NamedCodec<'bigUintLE', bigint>
+
 interface KnownCodecs extends CodecLookup {
   base32: Base32Codec
   base32c: Base32cCodec
@@ -9,6 +15,11 @@ interface KnownCodecs extends CodecLookup {
   base32hp: Base32hpCodec
   base32p: Base32pCodec
   msgpack: MsgPackCodec
+  bigIntBE: BigIntBECodec
+  bigIntLE: BigIntLECodec
+  bigIntQuick: BigIntQuickCodec
+  bigUintBE: BigUintBECodec
+  bigUintLE: BigUintLECodec
 }
 
 export type Codec <TCodec, TFallback = BinaryCodec, TCodecs = KnownCodecs> = BaseCodec<TCodec, TFallback, TCodecs>

@@ -55,12 +55,28 @@ function getBase (name) {
   }
 }
 
+const bigIntNames = ['bigIntLE', 'bigIntBE', 'bigIntQuick', 'bigUintLE', 'bigUintBE']
+function getBigInt (name) {
+  let codec
+  return {
+    get () {
+      if (codec === undefined) {
+        codec = prepare(require('@consento/bigint-codec')[name], 'bigint')
+      }
+      return codec
+    }
+  }
+}
+
 const props = {}
 for (const b32Name of b32Names) {
   props[b32Name] = getB32(b32Name)
 }
 for (const baseName of baseNames) {
   props[baseName] = getBase(baseName)
+}
+for (const bigIntName of bigIntNames) {
+  props[bigIntName] = getBigInt(bigIntName)
 }
 
 const byName = {}
@@ -91,7 +107,7 @@ function codecs (name, fallback) {
   return byName.binary
 }
 
-const available = b32Names.concat(baseNames).concat(['msgpack']).sort()
+const available = b32Names.concat(baseNames).concat(bigIntNames).concat(['msgpack']).sort()
 codecs.available = available
 codecs.has = codec => available.includes(codec)
 codecs.bindMsgpack = (base, name) => {
