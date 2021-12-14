@@ -9,7 +9,7 @@ Extended, sealed version of [codecs][codecs] that supports [msgpack][msgpack] an
 
 ```js
 const codecs = require('@consento/codecs')
-const json = codecs('base32')
+const json = codecs('json')
 const buffer = json.encode({ hello: 'world' }) // JSON buffer
 json.decode(buffer)
 
